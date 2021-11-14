@@ -1,0 +1,119 @@
+//My original implementation of linear regression with only 1 feature
+// package main
+
+// import (
+// 	"fmt"
+// 	"math/rand"
+// )
+
+// func predict(theta []float32, x []float32) (prediction float32) {
+// 	var sum float32 = 0
+// 	for i, v := range theta {
+// 		if i == 0 {
+// 			sum = sum + v*1
+// 		} else {
+// 			sum = sum + v*x[i-1]
+// 		}
+// 	}
+// 	return sum
+// }
+
+// //Update weights after computing loss
+// func training_step(theta []float32, x [][]float32, y []float32, alpha float32) (theta_prime []float32) {
+// 	new_theta := theta
+// 	// First Weight update
+// 	var sum float32 = 0
+// 	for i, v := range x {
+// 		sum = sum + predict(theta, v) - y[i]
+// 	}
+// 	new_theta[0] = theta[0] - alpha*float32(2)/float32(len(x))*sum
+// 	//Second Weight update
+// 	sum = 0
+// 	for i, v := range x {
+// 		sum = sum + (predict(theta, v)-y[i])*v[0]
+// 	}
+// 	new_theta[1] = theta[1] - alpha*float32(2)/float32(len(x))*sum
+
+// 	return new_theta
+// }
+
+// //Compute the Mean Squared Error
+// func loss(theta []float32, x [][]float32, y []float32) (total_loss float32) {
+// 	var sum float32 = 0
+// 	for i, x_v := range x {
+// 		prediction := predict(theta, x_v)
+// 		sum = sum + (prediction-y[i])*(prediction-y[i])
+// 	}
+// 	return sum / float32(len(x))
+// }
+
+// func hypot(theta []float32, x []float32) (value float32) {
+// 	var sum float32 = 0
+// 	for i, v := range theta {
+// 		sum += v * x[i]
+// 	}
+// 	return sum
+// }
+
+// func training_step_mul(theta []float32, x [][]float32, y []float32, alpha float32) (theta_prime []float32) {
+// 	//Copy parameter slice for updating
+// 	//Do not want to update parameters being evaulated during training
+// 	new_theta := make([]float32, len(theta))
+// 	copy(new_theta, theta)
+// 	fmt.Println(new_theta)
+
+// 	// Adding x0 bias term to all training examples
+// 	x_bias := [][]float32{}
+// 	for _, v := range x {
+// 		x_new := []float32{1}
+// 		x_new = append(x_new, v...)
+// 		x_bias = append(x_bias, x_new)
+// 	}
+
+// 	// For each parameter
+// 	for i, v := range theta {
+// 		var sum float32 = 0
+// 		for j, x_val := range x_bias {
+// 			fmt.Println("Hypothesis: ", hypot(theta, x_val))
+// 			fmt.Println("X-val", x_val)
+// 			fmt.Println("Y val", y[j])
+// 			fmt.Println("Theta", theta)
+// 			sum = sum + (hypot(theta, x_val)-y[j])*x_val[i]
+// 			fmt.Println("Current sum", sum)
+// 		}
+// 		fmt.Println(sum)
+// 		new_theta[i] = v - alpha*sum
+// 	}
+// 	fmt.Println("New Theta", new_theta)
+// 	return new_theta
+// }
+
+// func main() {
+// 	X_train := [][]float32{{1, 1}, {2, 2}, {3, 3}, {4, 4}, {5, 5}, {6, 6}, {7, 7}, {8, 8}, {9, 9}, {10, 10}}
+// 	y_train := make([]float32, len(X_train))
+// 	theta := make([]float32, len(X_train[0])+1)
+// 	for i, _ := range theta {
+// 		theta[i] = rand.Float32()
+// 	}
+// 	for i, v := range X_train {
+// 		y_train[i] = v[0]*2 + v[1]*1
+// 	}
+// 	rand.Seed(1)
+
+// 	total_loss := loss(theta, X_train, y_train)
+// 	fmt.Println("Total loss: ", total_loss)
+
+// 	for i := 0; i < 100; i++ {
+// 		new_theta := training_step_mul(theta, X_train, y_train, 0.001)
+// 		copy(theta, new_theta)
+// 	}
+
+// 	//Loss and Weights after training
+// 	total_loss = loss(theta, X_train, y_train)
+// 	fmt.Println(total_loss)
+// 	fmt.Println(theta)
+
+// 	//Test Prediction
+// 	res := predict(theta, []float32{1, 12.5})
+// 	fmt.Println(res)
+// }
